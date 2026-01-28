@@ -3,7 +3,7 @@
 // For server-side operations use the secret key below (DO NOT expose this in client-side code).
 
 export const SUPABASE_URL = 'https://ihhevhrrvmofklorfxfc.supabase.co';
-export const SUPABASE_ANON_KEY = 'sb_publishable_ieTWTY-P9SvYGdNEcSFiA_AqDgv5eA';
+export const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImloaGV2aHJydm1vZmtsb3JmeGZjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjkwMzIzMDQsImV4cCI6MjA4NDYwODMwNH0.2aBMqZ1zDgRbmOXQxtOZWYXfBfRQ6UYExJlJYWz8zj4';
 
 // Server / service role key (keep secret, use only on server)
 // SUPABASE_SERVICE_KEY = 'sb_secret_lZXdIqjtacr3STe4GD28mw_32famwkb'

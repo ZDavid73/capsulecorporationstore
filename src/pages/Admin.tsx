@@ -6,6 +6,7 @@ import { mockProducts } from '../utils/supabase';
 import ManualProductForm from '../components/ManualProductForm';
 import TCGProductForm from '../components/TCGProductForm';
 import { toast } from 'react-toastify';
+import { productService } from '../utils/supabase';
 
 export default function Admin() {
   const [products, setProducts] = useState<Product[]>([]);
@@ -25,9 +26,7 @@ export default function Admin() {
 
   const loadProducts = async () => {
     try {
-      // Replace with actual Supabase call when ready
-      // const data = await productService.getAllProducts();
-      const data = [...mockProducts];
+      const data = await productService.getAllProducts();
       setProducts(data);
     } catch (error) {
       console.error('Error loading products:', error);
@@ -43,8 +42,7 @@ export default function Admin() {
 
   const handleAddProduct = async (productData: any) => {
     try {
-      // Replace with actual Supabase call when ready
-      // await productService.createProduct(productData);
+      await productService.createProduct(productData);
       
       const newProduct: Product = {
         uuid: Date.now().toString(),
@@ -63,8 +61,7 @@ export default function Admin() {
 
   const handleToggleVisibility = async (product: Product) => {
     try {
-      // Replace with actual Supabase call when ready
-      // await productService.updateProduct(product.uuid, { is_hidden: !product.is_hidden });
+      await productService.updateProduct(product.uuid, { is_hidden: !product.is_hidden });
       
       setProducts(products.map(p => 
         p.uuid === product.uuid 
@@ -85,8 +82,7 @@ export default function Admin() {
     }
 
     try {
-      // Replace with actual Supabase call when ready
-      // await productService.deleteProduct(product.uuid);
+      await productService.deleteProduct(product.uuid);
       
       setProducts(products.filter(p => p.uuid !== product.uuid));
       toast.success('Product deleted successfully');

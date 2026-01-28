@@ -24,6 +24,7 @@ const TCGProductForm: React.FC<TCGProductFormProps> = ({ onSubmit, onCancel }) =
   const [searchResults, setSearchResults] = useState<any[]>([]);
   const [selectedCard, setSelectedCard] = useState<any | null>(null);
   const [isSearching, setIsSearching] = useState(false);
+  const [searchById, setSearchById] = useState(false);
 
   const {
     register,
@@ -49,7 +50,8 @@ const TCGProductForm: React.FC<TCGProductFormProps> = ({ onSubmit, onCancel }) =
     const timeoutId = setTimeout(async () => {
       setIsSearching(true);
 
-      const finalEndpoint = selectedCategory.endpoint + encodeURIComponent(searchQuery);
+      const finalEndpoint = `${selectedCategory.endpoint}?${searchById ? 'id' : 'name'}=${encodeURIComponent(searchQuery)}`;
+
       try {
         const response = await fetch(finalEndpoint, {
           headers: {
@@ -67,7 +69,6 @@ const TCGProductForm: React.FC<TCGProductFormProps> = ({ onSubmit, onCancel }) =
             id: card.id || card.uuid || card._id || `${card.name}-${Math.random()}`,
             name: card.name,
             image: card.image || card.images?.[0] || card.imageUrl || card.images?.small || '',
-            description: card.description || card.desc || ''
           })));
         } else {
           toast.error('Failed to search cards');
@@ -80,7 +81,7 @@ const TCGProductForm: React.FC<TCGProductFormProps> = ({ onSubmit, onCancel }) =
     }, 3000);
 
     return () => clearTimeout(timeoutId);
-  }, [searchQuery, selectedCategory]);
+  }, [searchQuery, selectedCategory, searchById]);
 
   const handleFormSubmit = async (data: TCGProductFormData) => {
     if (!selectedCard) {
@@ -152,9 +153,22 @@ const TCGProductForm: React.FC<TCGProductFormProps> = ({ onSubmit, onCancel }) =
               disabled={!selectedCategory || !selectedCategory.endpoint}
             />
           </div>
-          {isSearching && (
+
+            {isSearching && (
             <p className="text-sm text-gray-500 mt-1">Searching...</p>
-          )}
+            )}
+
+            <label className="flex items-center space-x-2 mt-2">
+            <input
+              type="checkbox"
+              checked={searchById}
+              onChange={(e) => {
+                setSearchById(p => !p);
+              }}
+              className="w-4 h-4"
+            />
+            <span className="text-sm text-gray-700">Search by ID</span>
+            </label>
         </div>
 
         {searchResults.length > 0 && (
