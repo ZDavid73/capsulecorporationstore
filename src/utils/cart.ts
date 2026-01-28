@@ -1,7 +1,7 @@
 import { type Product } from "../types/product"; 
 
 export const cartService = {
-  getCart(): any[] {
+  getCart(): Product[] {
     const cart = localStorage.getItem('hobbyShopCart');
     return cart ? JSON.parse(cart) : [];
   },
@@ -11,9 +11,9 @@ export const cartService = {
     const existingItem = cart.find(item => item.uuid === product.uuid);
 
     if (existingItem) {
-      existingItem.quantity += quantity;
+      existingItem.stock_quantity += quantity;
     } else {
-      cart.push({ ...product, quantity });
+      cart.push({ ...product, stock_quantity: quantity });
     }
 
     localStorage.setItem('hobbyShopCart', JSON.stringify(cart));
@@ -28,7 +28,7 @@ export const cartService = {
       if (quantity <= 0) {
         return this.removeFromCart(uuid);
       }
-      item.quantity = quantity;
+      item.stock_quantity = quantity;
       localStorage.setItem('hobbyShopCart', JSON.stringify(cart));
     }
     
@@ -47,7 +47,7 @@ export const cartService = {
   },
 
   getCartTotal(): number {
-    return this.getCart().reduce((total, item) => total + (item.price * item.quantity), 0);
+    return this.getCart().reduce((total, item) => total + (item.price * item.stock_quantity), 0);
   },
 
   generateWhatsAppMessage(): string {
@@ -57,7 +57,7 @@ export const cartService = {
     let message = 'Hello! I would like to order the following items:\n\n';
     
     cart.forEach(item => {
-      message += `• ${item.name} x${item.quantity} - $${(item.price * item.quantity).toFixed(2)}\n`;
+      message += `• ${item.name} x${item.stock_quantity} - $${(item.price * item.stock_quantity).toFixed(2)}\n`;
     });
     
     message += `\nTotal: $${total.toFixed(2)}`;

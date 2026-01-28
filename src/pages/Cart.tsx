@@ -3,12 +3,13 @@ import { Minus, Plus, Trash2, ShoppingBag } from 'lucide-react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import { cartService } from '../utils/cart';
+import type { Product } from '../types/product';
 
 // WhatsApp number set by owner (no plus sign or spaces). Example: countrycode + number -> 573236796356
 const WHATSAPP_NUMBER = '573236796356'; // +57 3236796356
 
 export default function Cart() {
-  const [cartItems, setCartItems] = useState<any[]>([]);
+  const [cartItems, setCartItems] = useState<Product[]>([]);
   const [total, setTotal] = useState(0);
 
   useEffect(() => {
@@ -75,7 +76,7 @@ export default function Cart() {
             {cartItems.map((item) => (
               <div key={item.uuid} className="p-6 flex items-center space-x-4">
                 <img
-                  src={item.image}
+                  src={item.image_url}
                   alt={item.name}
                   className="w-20 h-20 object-cover rounded-lg"
                 />
@@ -88,17 +89,17 @@ export default function Cart() {
                 
                 <div className="flex items-center space-x-3">
                   <button
-                    onClick={() => updateQuantity(item.uuid, item.quantity - 1)}
+                    onClick={() => updateQuantity(item.uuid, item.stock_quantity - 1)}
                     className="p-1 rounded-full hover:bg-gray-100 transition-colors"
                     aria-label="Decrease quantity"
                   >
                     <Minus className="h-4 w-4" />
                   </button>
                   
-                  <span className="w-8 text-center font-medium">{item.quantity}</span>
+                  <span className="w-8 text-center font-medium">{item.stock_quantity}</span>
                   
                   <button
-                    onClick={() => updateQuantity(item.uuid, item.quantity + 1)}
+                    onClick={() => updateQuantity(item.uuid, item.stock_quantity + 1)}
                     className="p-1 rounded-full hover:bg-gray-100 transition-colors"
                     aria-label="Increase quantity"
                   >
@@ -108,7 +109,7 @@ export default function Cart() {
                 
                 <div className="text-right">
                   <p className="font-bold text-lg">
-                    ${(item.price * item.quantity).toFixed(2)}
+                    ${(item.price * item.stock_quantity).toFixed(2)}
                   </p>
                   <button
                     onClick={() => removeItem(item.uuid)}
