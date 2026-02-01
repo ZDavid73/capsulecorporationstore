@@ -2,11 +2,82 @@ import React, { useState, useEffect } from 'react';
 import { Minus, Plus, Trash2, ShoppingBag } from 'lucide-react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
-import { cartService } from '../utils/cart';
+import cartService from '../utils/cart';
 import type { Product } from '../types/product';
+import { Container, Tittle, Text, Button } from '../components/styledcomponents';
 
-// WhatsApp number set by owner (no plus sign or spaces). Example: countrycode + number -> 573236796356
-const WHATSAPP_NUMBER = '573236796356'; // +57 3236796356
+const WHATSAPP_NUMBER = '573236796356';
+
+const PageWrapper = {
+  minHeight: '100vh',
+  backgroundColor: '#0f0f0f',
+};
+
+const MainContent = {
+  maxWidth: '64rem',
+  margin: '0 auto',
+  padding: '3rem 1rem',
+};
+
+const CartItemsContainer = {
+  backgroundColor: '#2D2D2D',
+  borderRadius: '15px',
+  overflow: 'hidden',
+  boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.1)',
+};
+
+const CartItem = {
+  padding: '1.5rem',
+  display: 'flex',
+  alignItems: 'center',
+  gap: '1rem',
+  borderBottom: '1px solid rgba(255, 255, 255, 0.1)',
+};
+
+const ItemImage = {
+  width: '5rem',
+  height: '5rem',
+  objectFit: 'cover' as const,
+  borderRadius: '15px',
+};
+
+const ItemInfo = {
+  flex: 1,
+};
+
+const QuantityControls = {
+  display: 'flex',
+  alignItems: 'center',
+  gap: '0.75rem',
+};
+
+const QuantityButton = {
+  padding: '0.25rem',
+  borderRadius: '50%',
+  backgroundColor: 'transparent',
+  border: 'none',
+  color: '#ffffff',
+  cursor: 'pointer',
+  transition: 'background-color 0.3s ease',
+};
+
+const TotalSection = {
+  backgroundColor: '#1a1a1a',
+  padding: '1.5rem',
+  borderRadius: '0 0 15px 15px',
+};
+
+const TotalRow = {
+  display: 'flex',
+  justifyContent: 'space-between',
+  alignItems: 'center',
+  marginBottom: '1rem',
+};
+
+const EmptyCartContainer = {
+  textAlign: 'center' as const,
+  padding: '3rem 0',
+};
 
 export default function Cart() {
   const [cartItems, setCartItems] = useState<Product[]>([]);
@@ -42,107 +113,119 @@ export default function Cart() {
 
   if (cartItems.length === 0) {
     return (
-      <div className="min-h-screen bg-gray-50">
+      <div style={PageWrapper}>
         <Header />
-        
-        <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-          <div className="text-center">
-            <ShoppingBag className="h-24 w-24 text-gray-300 mx-auto mb-4" />
-            <h1 className="text-2xl font-bold text-gray-900 mb-2">Your cart is empty</h1>
-            <p className="text-gray-600 mb-8">Add some products to get started!</p>
-            <a
-              href="/"
-              className="bg-primary text-white px-6 py-3 rounded-lg hover:bg-primary/90 transition-colors"
-            >
-              Continue Shopping
+        <main style={MainContent}>
+          <div style={EmptyCartContainer}>
+            <ShoppingBag style={{ height: '6rem', width: '6rem', color: '#2D2D2D', margin: '0 auto 1rem' }} />
+            <Tittle variant="white" style={{ fontSize: '1.5rem', marginBottom: '0.5rem' }}>
+              Your cart is empty
+            </Tittle>
+            <Text variant="gray" style={{ marginBottom: '2rem' }}>
+              Add some products to get started!
+            </Text>
+            <a href="/" style={{ textDecoration: 'none' }}>
+              <Button variant="purple">
+                Continue Shopping
+              </Button>
             </a>
           </div>
         </main>
-
         <Footer />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div style={PageWrapper}>
       <Header />
-      
-      <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <h1 className="text-3xl font-bold text-gray-900 mb-8">Shopping Cart</h1>
+      <main style={MainContent}>
+        <Tittle variant="white" style={{ fontSize: '1.875rem', marginBottom: '2rem' }}>
+          Shopping Cart
+        </Tittle>
 
-        <div className="bg-white rounded-lg shadow-sm overflow-hidden">
-          <div className="divide-y divide-gray-200">
+        <div style={CartItemsContainer}>
+          <div>
             {cartItems.map((item) => (
-              <div key={item.uuid} className="p-6 flex items-center space-x-4">
-                <img
-                  src={item.image_url}
-                  alt={item.name}
-                  className="w-20 h-20 object-cover rounded-lg"
-                />
+              <div key={item.uuid} style={CartItem}>
+                <img src={item.image_url} alt={item.name} style={ItemImage} />
                 
-                <div className="flex-1">
-                  <h3 className="font-semibold text-lg">{item.name}</h3>
-                  <p className="text-gray-600 text-sm">{item.category}</p>
-                  <p className="text-primary font-bold">${item.price.toFixed(2)}</p>
+                <div style={ItemInfo}>
+                  <Tittle variant="white" style={{ fontSize: '1.125rem', marginBottom: '0.25rem' }}>
+                    {item.name}
+                  </Tittle>
+                  <Text variant="gray" style={{ fontSize: '0.875rem' }}>
+                    {item.category}
+                  </Text>
+                  <Text variant="purple" style={{ fontWeight: 'bold', marginTop: '0.5rem' }}>
+                    ${item.price.toFixed(2)}
+                  </Text>
                 </div>
-                
-                <div className="flex items-center space-x-3">
+
+                <div style={QuantityControls}>
                   <button
                     onClick={() => updateQuantity(item.uuid, item.stock_quantity - 1)}
-                    className="p-1 rounded-full hover:bg-gray-100 transition-colors"
+                    style={QuantityButton}
                     aria-label="Decrease quantity"
                   >
-                    <Minus className="h-4 w-4" />
+                    <Minus style={{ height: '1rem', width: '1rem' }} />
                   </button>
-                  
-                  <span className="w-8 text-center font-medium">{item.stock_quantity}</span>
-                  
+                  <Text variant="white" style={{ width: '2rem', textAlign: 'center', fontWeight: '500' }}>
+                    {item.stock_quantity}
+                  </Text>
                   <button
                     onClick={() => updateQuantity(item.uuid, item.stock_quantity + 1)}
-                    className="p-1 rounded-full hover:bg-gray-100 transition-colors"
+                    style={QuantityButton}
                     aria-label="Increase quantity"
                   >
-                    <Plus className="h-4 w-4" />
+                    <Plus style={{ height: '1rem', width: '1rem' }} />
                   </button>
                 </div>
-                
-                <div className="text-right">
-                  <p className="font-bold text-lg">
+
+                <div style={{ textAlign: 'right' }}>
+                  <Text variant="white" style={{ fontWeight: 'bold', fontSize: '1.125rem' }}>
                     ${(item.price * item.stock_quantity).toFixed(2)}
-                  </p>
+                  </Text>
                   <button
                     onClick={() => removeItem(item.uuid)}
-                    className="text-red-500 hover:text-red-700 transition-colors mt-2"
+                    style={{ 
+                      ...QuantityButton, 
+                      color: '#FF4444', 
+                      marginTop: '0.5rem',
+                      display: 'block',
+                      marginLeft: 'auto'
+                    }}
                     aria-label="Remove item"
                   >
-                    <Trash2 className="h-4 w-4" />
+                    <Trash2 style={{ height: '1rem', width: '1rem' }} />
                   </button>
                 </div>
               </div>
             ))}
           </div>
-          
-          <div className="bg-gray-50 p-6">
-            <div className="flex justify-between items-center mb-4">
-              <span className="text-xl font-semibold">Total:</span>
-              <span className="text-2xl font-bold text-primary">${total.toFixed(2)}</span>
+
+          <div style={TotalSection}>
+            <div style={TotalRow}>
+              <Text variant="white" style={{ fontSize: '1.25rem', fontWeight: '600' }}>
+                Total
+              </Text>
+              <Text variant="purple" style={{ fontSize: '1.5rem', fontWeight: 'bold' }}>
+                ${total.toFixed(2)}
+              </Text>
             </div>
-            
-            <button
+            <Button
+              variant="green"
               onClick={handleCheckout}
-              className="w-full bg-green-600 text-white py-3 px-6 rounded-lg hover:bg-green-700 transition-colors font-semibold"
+              style={{ width: '100%', padding: '0.75rem 1.5rem', fontWeight: '600' }}
             >
               Checkout via WhatsApp
-            </button>
-            
-            <p className="text-sm text-gray-600 mt-2 text-center">
+            </Button>
+            <Text variant="gray" style={{ fontSize: '0.875rem', marginTop: '0.5rem', textAlign: 'center' }}>
               You'll be redirected to WhatsApp to complete your order
-            </p>
+            </Text>
           </div>
         </div>
       </main>
-
       <Footer />
     </div>
   );

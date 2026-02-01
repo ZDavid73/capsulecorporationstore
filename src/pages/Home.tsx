@@ -7,6 +7,67 @@ import ProductFilters from '../components/ProductFilters';
 import LoginModal from '../components/LoginModal';
 import type { Product } from '../types/product';
 import { mockProducts } from '../utils/supabase';
+import { Tittle, Text, Button } from '../components/styledcomponents';
+
+const PageWrapper = {
+  minHeight: '100vh',
+  backgroundColor: '#0f0f0f',
+};
+
+const MainContent = {
+  maxWidth: '80rem',
+  margin: '0 auto',
+  padding: '2rem 1rem',
+};
+
+const HeaderSection = {
+  display: 'flex',
+  justifyContent: 'space-between',
+  alignItems: 'center',
+  marginBottom: '2rem',
+};
+
+const GridLayout = {
+  display: 'grid',
+  gridTemplateColumns: '1fr',
+  gap: '2rem',
+};
+
+const FiltersColumn = {
+  gridColumn: '1',
+};
+
+const ProductsColumn = {
+  gridColumn: '1',
+};
+
+const ProductsGrid = {
+  display: 'grid',
+  gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
+  gap: '1.5rem',
+};
+
+const LoadingContainer = {
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+  height: '16rem',
+};
+
+const LoadingSpinner = {
+  width: '3rem',
+  height: '3rem',
+  border: '4px solid #2D2D2D',
+  borderTop: '4px solid #a71fd0',
+  borderRadius: '50%',
+  animation: 'spin 1s linear infinite',
+  margin: '0 auto 1rem',
+};
+
+const EmptyState = {
+  textAlign: 'center' as const,
+  padding: '3rem 0',
+};
 
 export default function Home() {
   const [products, setProducts] = useState<Product[]>([]);
@@ -16,11 +77,8 @@ export default function Home() {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Simulate loading products from Supabase
     const loadProducts = async () => {
       try {
-        // Replace with actual Supabase call when ready
-        // const data = await productService.getProducts();
         const data = mockProducts.filter(product => !product.is_hidden);
         setProducts(data);
         setFilteredProducts(data);
@@ -35,7 +93,7 @@ export default function Home() {
   }, []);
 
   useEffect(() => {
-    if (selectedCategory === '') {
+    if (!selectedCategory) {
       setFilteredProducts(products);
     } else {
       setFilteredProducts(products.filter(product => product.category === selectedCategory));
@@ -44,13 +102,13 @@ export default function Home() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gray-50">
+      <div style={PageWrapper}>
         <Header />
-        <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <div className="flex justify-center items-center h-64">
-            <div className="text-center">
-              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
-              <p className="text-gray-600">Loading products...</p>
+        <main style={MainContent}>
+          <div style={LoadingContainer}>
+            <div style={{ textAlign: 'center' }}>
+              <div style={LoadingSpinner}></div>
+              <Text variant="gray">Loading products...</Text>
             </div>
           </div>
         </main>
@@ -60,41 +118,46 @@ export default function Home() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div style={PageWrapper}>
       <Header />
-      
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="flex justify-between items-center mb-8">
+      <main style={MainContent}>
+        <div style={HeaderSection}>
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">Our Products</h1>
-            <p className="text-gray-600 mt-2">Discover amazing hobby items and collectibles</p>
+            <Tittle variant="white" style={{ fontSize: '1.875rem', marginBottom: '0.5rem' }}>
+              Our Products
+            </Tittle>
+            <Text variant="gray">
+              Discover amazing hobby items and collectibles
+            </Text>
           </div>
-          
-          <button
+          <Button 
+            variant="gray"
             onClick={() => setIsLoginModalOpen(true)}
-            className="flex items-center space-x-2 text-gray-500 hover:text-primary transition-colors"
+            style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}
             aria-label="Owner login"
           >
-            <Key className="h-5 w-5" />
-            <span className="text-sm">Owner</span>
-          </button>
+            <Key style={{ height: '1.25rem', width: '1.25rem' }} />
+            <span style={{ fontSize: '0.875rem' }}>Owner</span>
+          </Button>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
-          <div className="lg:col-span-1">
-            <ProductFilters
-              selectedCategory={selectedCategory}
-              onCategoryChange={setSelectedCategory}
+        <div style={GridLayout}>
+          <div style={FiltersColumn}>
+            <ProductFilters 
+              selectedCategory={selectedCategory} 
+              onCategoryChange={setSelectedCategory} 
             />
           </div>
-          
-          <div className="lg:col-span-3">
+
+          <div style={ProductsColumn}>
             {filteredProducts.length === 0 ? (
-              <div className="text-center py-12">
-                <p className="text-gray-500 text-lg">No products found in this category.</p>
+              <div style={EmptyState}>
+                <Text variant="gray" style={{ fontSize: '1.125rem' }}>
+                  No products found in this category.
+                </Text>
               </div>
             ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div style={ProductsGrid}>
                 {filteredProducts.map((product) => (
                   <ProductCard key={product.uuid} product={product} />
                 ))}
@@ -103,13 +166,24 @@ export default function Home() {
           </div>
         </div>
       </main>
-
       <Footer />
-      
-      <LoginModal
-        isOpen={isLoginModalOpen}
-        onClose={() => setIsLoginModalOpen(false)}
+      <LoginModal 
+        isOpen={isLoginModalOpen} 
+        onClose={() => setIsLoginModalOpen(false)} 
       />
+      
+      <style>{`
+        @keyframes spin {
+          0% { transform: rotate(0deg); }
+          100% { transform: rotate(360deg); }
+        }
+        
+        @media (min-width: 1024px) {
+          .grid-layout {
+            grid-template-columns: 300px 1fr;
+          }
+        }
+      `}</style>
     </div>
   );
 }
