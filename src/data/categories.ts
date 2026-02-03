@@ -10,7 +10,7 @@ export const categories = [
 export const tcgApiCategories = [
   {
     name: 'One Piece',
-    endpoint: '/api/one-piece/cards'
+    endpoint: '/api/api/one-piece/cards'
   },
   {
     name: 'Pokémon',
