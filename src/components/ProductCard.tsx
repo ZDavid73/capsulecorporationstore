@@ -345,9 +345,6 @@ const ProductModal: React.FC<ProductModalProps> = ({ product, isOpen, onClose, o
           <BuyButton variant="green" onClick={onAddToCart} style={{ flex: 1 }}>
             Agregar al carrito
           </BuyButton>
-          <Button variant="gray" onClick={onClose} style={{ flex: 1 }}>
-            Cerrar
-          </Button>
         </ModalButtons>
       </ModalContent>
     </ModalOverlay>
